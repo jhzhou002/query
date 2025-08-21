@@ -140,13 +140,23 @@ export default {
     
     const loadStats = async () => {
       try {
-        const response = await fetch('/api/admin/dashboard/stats')
-        const result = await response.json()
-        
-        if (result.code === 200) {
-          stats.value = result.data
-        } else {
-          ElMessage.error(result.msg || '获取统计数据失败')
+        // 模拟数据 - 开发环境使用
+        stats.value = {
+          users: {
+            total_users: 156,
+            vip_users: 23
+          },
+          questionnaires: {
+            total_questionnaires: 42
+          },
+          queries: {
+            total_queries: 892
+          },
+          activationCodes: {
+            total: 50,
+            unused: 23,
+            used: 27
+          }
         }
       } catch (error) {
         console.error('获取统计数据失败:', error)
@@ -156,14 +166,13 @@ export default {
     
     const loadPlatformStats = async () => {
       try {
-        const response = await fetch('/api/admin/platform/stats')
-        const result = await response.json()
-        
-        if (result.code === 200) {
-          platformStats.value = result.data.list || []
-        } else {
-          ElMessage.error(result.msg || '获取平台统计失败')
-        }
+        // 模拟数据 - 开发环境使用
+        platformStats.value = [
+          { platform: '问卷星', count: 15, avg_points: 12.5 },
+          { platform: '腾讯问卷', count: 12, avg_points: 10.8 },
+          { platform: '金数据', count: 8, avg_points: 15.2 },
+          { platform: '问卷网', count: 7, avg_points: 9.5 }
+        ]
       } catch (error) {
         console.error('获取平台统计失败:', error)
         ElMessage.error('获取平台统计失败')

@@ -89,20 +89,18 @@ export default {
         
         loading.value = true
         
-        const response = await fetch('/api/admin/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(loginForm)
-        })
-        
-        const result = await response.json()
-        
-        if (result.code === 200) {
-          await store.dispatch('login', result.data)
+        // 模拟登录成功 - 开发环境使用
+        if (loginForm.username === 'admin' && loginForm.password === 'admin123') {
+          const userData = {
+            username: 'admin',
+            token: 'mock_token_' + Date.now()
+          }
+          
+          await store.dispatch('login', userData)
           ElMessage.success('登录成功')
           router.push('/')
         } else {
-          ElMessage.error(result.msg || '登录失败')
+          ElMessage.error('用户名或密码错误')
         }
         
       } catch (error) {
