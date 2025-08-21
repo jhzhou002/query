@@ -5,7 +5,7 @@ const config = {
   ACCESS_KEY: 'nfxmZVGEHjkd8Rsn44S-JSynTBUUguTScil9dDvC',
   SECRET_KEY: '9lZjiRtRLL0U_MuYkcUZBAL16TlIJ8_dDSbTqqU2',
   BUCKET_NAME: 'youxuan-images',
-  BUCKET_DOMAIN: '', // 七牛云空间绑定的域名，部署时需要配置
+  BUCKET_DOMAIN: 'guangpan.lingjing235.cn', // 七牛云空间绑定的域名，部署时需要配置
   FOLDER: 'questionnaire/' // 存储文件夹
 };
 
