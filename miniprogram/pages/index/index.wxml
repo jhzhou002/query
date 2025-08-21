@@ -1,0 +1,165 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 轮播图 -->
+  <view class="carousel-container" wx:if="{{carousels.length > 0}}">
+    <swiper 
+      class="carousel" 
+      indicator-dots="{{carousels.length > 1}}" 
+      autoplay="{{carousels.length > 1}}" 
+      circular="{{carousels.length > 1}}"
+      indicator-color="rgba(255,255,255,0.5)"
+      indicator-active-color="#fff"
+      bindchange="onCarouselChange"
+    >
+      <swiper-item wx:for="{{carousels}}" wx:key="id">
+        <view class="carousel-item" bindtap="onCarouselTap" data-link="{{item.link}}">
+          <image class="carousel-image" src="{{item.image_url}}" mode="aspectFill"></image>
+          <view class="carousel-overlay">
+            <text class="carousel-title">{{item.title}}</text>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 快速操作区 -->
+  <view class="quick-actions">
+    <view class="action-item" bindtap="goToSearch">
+      <view class="action-icon">
+        <text class="icon">🔍</text>
+      </view>
+      <text class="action-text">问卷查询</text>
+    </view>
+    
+    <view class="action-item" bindtap="goToActivation">
+      <view class="action-icon">
+        <text class="icon">🔑</text>
+      </view>
+      <text class="action-text">激活码</text>
+    </view>
+    
+    <navigator url="/pages/history/history" open-type="switchTab" class="action-item">
+      <view class="action-icon">
+        <text class="icon">📊</text>
+      </view>
+      <text class="action-text">查询历史</text>
+    </navigator>
+    
+    <navigator url="/pages/profile/profile" open-type="switchTab" class="action-item">
+      <view class="action-icon">
+        <text class="icon">👤</text>
+      </view>
+      <text class="action-text">个人中心</text>
+    </navigator>
+  </view>
+
+  <!-- 用户状态卡片 -->
+  <view class="user-card" wx:if="{{isLogin}}">
+    <view class="user-info">
+      <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <view class="user-name">
+          {{userInfo.nickName || '用户'}}
+          <text class="vip-badge" wx:if="{{userInfo.is_vip}}">VIP</text>
+        </view>
+        <view class="user-status">
+          <text wx:if="{{userInfo.is_vip}}">VIP会员到期：{{userInfo.vip_expiry_date}}</text>
+          <text wx:else>普通用户</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="stats-grid">
+      <view class="stats-item">
+        <text class="stats-number">{{stats.totalQueries}}</text>
+        <text class="stats-label">总查询</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-number">{{stats.todayQueries}}</text>
+        <text class="stats-label">今日查询</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-prompt" wx:else>
+    <view class="prompt-content">
+      <text class="prompt-icon">🔐</text>
+      <text class="prompt-title">欢迎使用问卷查询系统</text>
+      <text class="prompt-desc">登录后可查看更多功能</text>
+      <button class="btn btn-primary btn-full" bindtap="goToLogin">立即登录</button>
+    </view>
+  </view>
+
+  <!-- 公告栏 -->
+  <view class="announcements" wx:if="{{announcements.length > 0}}">
+    <view class="section-title">
+      <text class="title-icon">📢</text>
+      <text class="title-text">系统公告</text>
+    </view>
+    
+    <view class="announcement-list">
+      <view 
+        class="announcement-item" 
+        wx:for="{{announcements}}" 
+        wx:key="id"
+        bindtap="viewAnnouncement"
+        data-announcement="{{item}}"
+      >
+        <view class="announcement-content">
+          <text class="announcement-title">{{item.title}}</text>
+          <text class="announcement-time">{{item.created_at}}</text>
+        </view>
+        <view class="announcement-arrow">→</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能介绍 -->
+  <view class="features">
+    <view class="section-title">
+      <text class="title-icon">✨</text>
+      <text class="title-text">主要功能</text>
+    </view>
+    
+    <view class="feature-list">
+      <view class="feature-item">
+        <view class="feature-icon">🔍</view>
+        <view class="feature-content">
+          <text class="feature-title">问卷查询</text>
+          <text class="feature-desc">快速查询问卷信息和奖励积分</text>
+        </view>
+      </view>
+      
+      <view class="feature-item">
+        <view class="feature-icon">👑</view>
+        <view class="feature-content">
+          <text class="feature-title">VIP会员</text>
+          <text class="feature-desc">享受更多查询特权和优质服务</text>
+        </view>
+      </view>
+      
+      <view class="feature-item">
+        <view class="feature-icon">🔑</view>
+        <view class="feature-content">
+          <text class="feature-title">激活码</text>
+          <text class="feature-desc">使用激活码升级VIP会员身份</text>
+        </view>
+      </view>
+      
+      <view class="feature-item">
+        <view class="feature-icon">📊</view>
+        <view class="feature-content">
+          <text class="feature-title">查询历史</text>
+          <text class="feature-desc">查看历史查询记录和统计信息</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

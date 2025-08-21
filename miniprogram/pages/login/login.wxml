@@ -1,0 +1,105 @@
+<!--pages/login/login.wxml-->
+<view class="container">
+  <view class="login-header">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <text class="app-name">问卷查询系统</text>
+    <text class="app-desc">快速查询问卷信息，获取奖励积分</text>
+  </view>
+
+  <view class="login-content">
+    <!-- 未获取用户信息状态 -->
+    <view class="login-section" wx:if="{{!hasUserInfo}}">
+      <view class="welcome-text">
+        <text class="welcome-title">欢迎使用</text>
+        <text class="welcome-subtitle">请授权登录以获取完整功能</text>
+      </view>
+
+      <!-- 新版授权按钮 -->
+      <button 
+        wx:if="{{canIUseGetUserProfile}}"
+        class="btn btn-primary btn-large btn-full"
+        bindtap="getUserProfile"
+        loading="{{loading}}"
+      >
+        <text wx:if="{{loading}}">登录中...</text>
+        <text wx:else>微信授权登录</text>
+      </button>
+
+      <!-- 旧版授权按钮 -->
+      <button 
+        wx:else
+        class="btn btn-primary btn-large btn-full"
+        open-type="getUserInfo"
+        bindgetuserinfo="getUserInfo"
+        loading="{{loading}}"
+      >
+        <text wx:if="{{loading}}">登录中...</text>
+        <text wx:else>微信授权登录</text>
+      </button>
+    </view>
+
+    <!-- 已获取用户信息状态 -->
+    <view class="user-preview" wx:else>
+      <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <text class="user-name">{{userInfo.nickName}}</text>
+      <text class="login-status">正在登录...</text>
+      
+      <view class="loading-indicator">
+        <view class="loading-spinner"></view>
+      </view>
+    </view>
+
+    <!-- 功能特性介绍 -->
+    <view class="features-intro">
+      <text class="intro-title">主要功能</text>
+      
+      <view class="feature-list">
+        <view class="feature-item">
+          <view class="feature-icon">🔍</view>
+          <view class="feature-text">
+            <text class="feature-name">问卷查询</text>
+            <text class="feature-desc">快速查询问卷编号和奖励信息</text>
+          </view>
+        </view>
+        
+        <view class="feature-item">
+          <view class="feature-icon">👑</view>
+          <view class="feature-text">
+            <text class="feature-name">VIP特权</text>
+            <text class="feature-desc">享受更多查询次数和优质服务</text>
+          </view>
+        </view>
+        
+        <view class="feature-item">
+          <view class="feature-icon">🔑</view>
+          <view class="feature-text">
+            <text class="feature-name">激活码</text>
+            <text class="feature-desc">使用激活码升级VIP会员身份</text>
+          </view>
+        </view>
+        
+        <view class="feature-item">
+          <view class="feature-icon">📊</view>
+          <view class="feature-text">
+            <text class="feature-name">历史记录</text>
+            <text class="feature-desc">查看历史查询记录和统计</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 页面底部 -->
+  <view class="login-footer">
+    <view class="agreement-text">
+      <text>登录即表示同意</text>
+      <text class="agreement-link" bindtap="viewUserAgreement">《用户协议》</text>
+      <text>和</text>
+      <text class="agreement-link" bindtap="viewPrivacyPolicy">《隐私政策》</text>
+    </view>
+    
+    <view class="footer-actions">
+      <button class="btn btn-secondary" bindtap="goBack">稍后登录</button>
+    </view>
+  </view>
+</view>

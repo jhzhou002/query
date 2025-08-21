@@ -1,0 +1,172 @@
+<!--pages/search/search.wxml-->
+<view class="container">
+  <!-- 搜索表单 -->
+  <view class="search-form">
+    <view class="form-header">
+      <text class="form-title">问卷查询</text>
+      <text class="form-subtitle">输入问卷编号快速查询</text>
+    </view>
+    
+    <view class="form-content">
+      <view class="input-group">
+        <text class="input-label">问卷编号 *</text>
+        <input 
+          class="input-field"
+          type="text"
+          placeholder="请输入问卷编号"
+          value="{{searchForm.q_number}}"
+          bindinput="onInputChange"
+          data-field="q_number"
+          confirm-type="search"
+          bindconfirm="performSearch"
+        />
+      </view>
+      
+      <view class="input-group">
+        <text class="input-label">平台</text>
+        <picker 
+          class="platform-picker"
+          bindchange="onPlatformChange" 
+          value="{{0}}" 
+          range="{{platforms}}"
+          range-key="label"
+        >
+          <view class="picker-display">
+            {{searchForm.platform || '选择平台（可选）'}}
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+      
+      <button 
+        class="btn btn-primary btn-large btn-full search-btn"
+        bindtap="performSearch"
+        loading="{{searching}}"
+      >
+        <text wx:if="{{searching}}">搜索中...</text>
+        <text wx:else>🔍 开始查询</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="search-history" wx:if="{{showHistory && searchHistory.length > 0}}">
+    <view class="history-header">
+      <text class="history-title">搜索历史</text>
+      <text class="history-clear" bindtap="clearSearchHistory">清空</text>
+    </view>
+    
+    <view class="history-list">
+      <view 
+        class="history-item"
+        wx:for="{{searchHistory}}"
+        wx:key="index"
+        bindtap="useHistorySearch"
+        data-history="{{item}}"
+      >
+        <view class="history-content">
+          <text class="history-number">{{item.q_number}}</text>
+          <text class="history-platform" wx:if="{{item.platform}}">{{item.platform}}</text>
+          <text class="history-time">{{item.searchTime}}</text>
+        </view>
+        <text 
+          class="history-delete" 
+          bindtap="deleteHistory" 
+          data-index="{{index}}"
+        >×</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="search-results" wx:if="{{hasSearched}}">
+    <view class="results-header">
+      <text class="results-title">查询结果</text>
+      <text class="results-count">共 {{searchResults.length}} 条</text>
+      <text class="results-clear" bindtap="clearResults">清空</text>
+    </view>
+    
+    <!-- 有结果 -->
+    <view class="results-list" wx:if="{{searchResults.length > 0}}">
+      <view 
+        class="result-item"
+        wx:for="{{searchResults}}"
+        wx:key="id"
+      >
+        <view class="result-header">
+          <view class="result-platform">
+            <text class="platform-name">{{item.platform}}</text>
+            <text class="result-number">{{item.q_number}}</text>
+          </view>
+          <view class="result-points">
+            <text class="points-value">{{item.reward_points}}</text>
+            <text class="points-label">积分</text>
+          </view>
+        </view>
+        
+        <view class="result-content">
+          <view class="result-notes">
+            <text class="notes-label">筛选条件：</text>
+            <text class="notes-text">{{item.notes}}</text>
+          </view>
+          <text class="result-time">发布时间：{{item.created_at}}</text>
+        </view>
+        
+        <view class="result-actions">
+          <button 
+            class="btn btn-secondary btn-small"
+            bindtap="copyQuestionnaire"
+            data-questionnaire="{{item}}"
+          >
+            📋 复制
+          </button>
+          <button 
+            class="btn btn-primary btn-small"
+            bindtap="shareQuestionnaire"
+            data-questionnaire="{{item}}"
+          >
+            📤 分享
+          </button>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 无结果 -->
+    <view class="empty-results" wx:else>
+      <view class="empty-icon">🔍</view>
+      <text class="empty-title">未找到相关问卷</text>
+      <text class="empty-desc">请检查问卷编号是否正确，或尝试更换平台</text>
+      
+      <view class="empty-suggestions">
+        <text class="suggestions-title">搜索建议：</text>
+        <text class="suggestion-item">• 确保问卷编号输入正确</text>
+        <text class="suggestion-item">• 尝试不选择特定平台</text>
+        <text class="suggestion-item">• 问卷可能尚未收录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-required" wx:if="{{!isLogin && !hasSearched}}">
+    <view class="login-prompt">
+      <view class="prompt-icon">🔐</view>
+      <text class="prompt-title">需要登录</text>
+      <text class="prompt-desc">登录后可使用问卷查询功能</text>
+      <button class="btn btn-primary" bindtap="goToLogin">立即登录</button>
+    </view>
+  </view>
+
+  <!-- VIP提示 -->
+  <view class="vip-tip" wx:if="{{isLogin && !userInfo.is_vip}}">
+    <view class="tip-content">
+      <text class="tip-icon">👑</text>
+      <view class="tip-text">
+        <text class="tip-title">升级VIP享受更多特权</text>
+        <text class="tip-desc">普通用户每日限查询5次，VIP用户无限制</text>
+      </view>
+      <navigator url="/pages/activation/activation" class="tip-action">
+        <text>升级</text>
+      </navigator>
+    </view>
+  </view>
+</view>
